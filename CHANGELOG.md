@@ -11,6 +11,12 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.1.0](https://github.com/ddnetters/stringly-typed/compare/v1.0.3...v1.1.0) (2026-01-28)
+
+### ✨ Features
+
+* add optional PR comments for validation results ([#20](https://github.com/ddnetters/stringly-typed/issues/20)) ([fb37c1a](https://github.com/ddnetters/stringly-typed/commit/fb37c1abeec4c455356ab56858a92cbd29b0886a))
+
 ## [1.0.3](https://github.com/ddnetters/stringly-typed/compare/v1.0.2...v1.0.3) (2026-01-28)
 
 ### 🔧 Maintenance
