@@ -11,6 +11,12 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.1.3](https://github.com/ddnetters/stringly-typed/compare/v1.1.2...v1.1.3) (2026-01-28)
+
+### 👷 CI/CD
+
+* add CodeQL security analysis workflow ([c03c39b](https://github.com/ddnetters/stringly-typed/commit/c03c39b1c3500c92aec0871fe2ba50dd389bc60f))
+
 ## [1.1.2](https://github.com/ddnetters/stringly-typed/compare/v1.1.1...v1.1.2) (2026-01-28)
 
 ### 📚 Documentation
