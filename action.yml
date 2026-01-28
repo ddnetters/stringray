@@ -7,13 +7,17 @@ inputs:
     required: true
     default: '**/*.{js,ts,md,json}'
   checker:
-    description: 'Checker type to use (grammar, char_count, custom)'
+    description: 'Checker type to use (grammar, char_count, custom, brand_style)'
     required: true
     default: 'grammar'
   checker-options:
     description: 'JSON string with checker options'
     required: false
     default: '{}'
+  style-guide-file:
+    description: 'Path to style guide file for brand_style checker (e.g., STYLE_GUIDE.md)'
+    required: false
+    default: ''
   decider:
     description: 'Decider type to use (threshold, noCritical, custom)'
     required: true

@@ -2,11 +2,11 @@
 
 Complete TypeScript API documentation for the String Validator.
 
-## Main Function
+## Main Functions
 
 ### `validateCodebaseStrings`
 
-The primary function that orchestrates the entire validation process.
+The primary function that orchestrates the entire validation process for **sync checkers**.
 
 ```typescript
 function validateCodebaseStrings(input: ValidatorInput): ValidatorOutput
@@ -17,6 +17,9 @@ function validateCodebaseStrings(input: ValidatorInput): ValidatorOutput
 
 **Returns:**
 - [ValidatorOutput](#validatoroutput) - Validation results and summary
+
+**Throws:**
+- `Error`: If an async checker (like `brand_style`) is used
 
 **Example:**
 ```typescript
@@ -34,6 +37,46 @@ const result = validateCodebaseStrings({
 console.log(result.summary.pass); // boolean
 ```
 
+### `validateCodebaseStringsAsync`
+
+Async version that supports both sync and async checkers. **Required for `brand_style` checker.**
+
+```typescript
+function validateCodebaseStringsAsync(input: ValidatorInput): Promise<ValidatorOutput>
+```
+
+**Parameters:**
+- `input`: [ValidatorInput](#validatorinput) - Configuration and files to validate
+
+**Returns:**
+- `Promise<ValidatorOutput>` - Validation results and summary
+
+**Features:**
+- Supports all checker types (sync and async)
+- Batches async checks (10 at a time) to avoid API overload
+- Falls back to sync processing for non-async checkers
+
+**Example:**
+```typescript
+import { validateCodebaseStringsAsync } from './validator';
+
+const result = await validateCodebaseStringsAsync({
+  files: [
+    { path: 'src/app.js', content: 'const msg = "The user clicked submit";' }
+  ],
+  checker: 'brand_style',
+  checkerOptions: {
+    styleGuide: 'Use "customer" not "user". Use "select" not "click".',
+    model: 'openai:gpt-4o-mini',
+    severityThreshold: 'warning'
+  },
+  decider: 'threshold',
+  deciderOptions: { minValidRatio: 0.8 }
+});
+
+console.log(result.summary.pass); // boolean
+```
+
 ## Type Interfaces
 
 ### `ValidatorInput`
@@ -43,7 +86,7 @@ Configuration object for the validation process.
 ```typescript
 interface ValidatorInput {
   files: { path: string; content: string }[];
-  checker: "grammar" | "char_count" | "custom";
+  checker: "grammar" | "char_count" | "custom" | "brand_style";
   checkerOptions?: Record<string, any>;
   decider: "threshold" | "noCritical" | "custom";
   deciderOptions?: Record<string, any>;
@@ -156,8 +199,39 @@ Result from a checker's validation.
 
 ```typescript
 interface CheckResult {
-  valid: boolean;  // Whether the string is valid
-  message: string; // Validation message
+  valid: boolean;      // Whether the string is valid
+  message: string;     // Validation message
+  details?: StyleViolation[];  // Detailed violations (brand_style only)
+  confidence?: number; // LLM confidence 0-1 (brand_style only)
+}
+```
+
+### `StyleViolation`
+
+Detailed violation information from the brand style checker.
+
+```typescript
+interface StyleViolation {
+  type: 'tone' | 'terminology' | 'formatting' | 'grammar' | 'other';
+  severity: 'error' | 'warning' | 'suggestion';
+  original: string;     // The problematic text
+  suggestion?: string;  // How to fix it
+  explanation: string;  // Why it's a violation
+}
+```
+
+### `BrandStyleOptions`
+
+Configuration options for the brand style checker.
+
+```typescript
+interface BrandStyleOptions {
+  styleGuide: string | StyleGuideConfig;  // Required: The style guide
+  model?: string;                          // Default: "openai:gpt-4o-mini"
+  severityThreshold?: 'error' | 'warning' | 'suggestion';  // Default: 'error'
+  temperature?: number;                    // Default: 0
+  timeout?: number;                        // Request timeout in ms
+  enableCache?: boolean;                   // Default: true
 }
 ```
 
@@ -201,11 +275,42 @@ console.log(matches[0].content); // "Hello"
 
 ### `Checker` Interface
 
-Base interface for all checkers.
+Base interface for synchronous checkers.
 
 ```typescript
 interface Checker {
   check(content: string, options?: Record<string, any>): CheckResult;
+}
+```
+
+### `AsyncChecker` Interface
+
+Base interface for asynchronous checkers (like `brand_style`).
+
+```typescript
+interface AsyncChecker {
+  check(content: string, options?: Record<string, any>): Promise<CheckResult>;
+}
+```
+
+### `isAsyncChecker`
+
+Type guard function to check if a checker is async.
+
+```typescript
+function isAsyncChecker(checker: Checker | AsyncChecker): checker is AsyncChecker
+```
+
+**Example:**
+```typescript
+import { CheckerFactory, isAsyncChecker } from 'stringray';
+
+const checker = CheckerFactory.createChecker('brand_style');
+
+if (isAsyncChecker(checker)) {
+  const result = await checker.check('content', options);
+} else {
+  const result = checker.check('content', options);
 }
 ```
 
@@ -215,7 +320,7 @@ Factory class for creating checker instances.
 
 ```typescript
 class CheckerFactory {
-  static createChecker(type: "grammar" | "char_count" | "custom"): Checker
+  static createChecker(type: "grammar" | "char_count" | "custom" | "brand_style"): Checker | AsyncChecker
 }
 ```
 
@@ -275,6 +380,38 @@ class CustomChecker implements Checker {
 
 **Options:**
 - `logic` (string): JavaScript expression for validation
+
+### `BrandStyleChecker`
+
+Validates content against a brand style guide using LLM.
+
+```typescript
+class BrandStyleChecker implements AsyncChecker {
+  check(content: string, options?: BrandStyleOptions): Promise<CheckResult>
+  clearCache(): void  // Clears the result cache
+}
+```
+
+**Options:** See [BrandStyleOptions](#brandstyleoptions)
+
+**Example:**
+```typescript
+import { BrandStyleChecker } from 'stringray';
+
+const checker = new BrandStyleChecker();
+
+const result = await checker.check(
+  'The user uploaded a file',
+  {
+    styleGuide: 'Use "customer" not "user". Use active voice.',
+    model: 'openai:gpt-4o-mini',
+    severityThreshold: 'warning'
+  }
+);
+
+// result.valid === false
+// result.details contains StyleViolation[] for terminology issue
+```
 
 ## Deciders
 

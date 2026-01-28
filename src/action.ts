@@ -2,16 +2,29 @@ import * as core from '@actions/core';
 import * as fs from 'fs';
 import * as path from 'path';
 import { glob } from 'glob';
-import { validateCodebaseStrings } from './validator';
-import { ValidatorInput } from './types';
+import { validateCodebaseStrings, validateCodebaseStringsAsync } from './validator';
+import { ValidatorInput, ValidatorOutput } from './types';
 
 async function run(): Promise<void> {
   try {
     const filesPattern = core.getInput('files') || '**/*.{js,ts,md,json}';
-    const checker = core.getInput('checker') as 'grammar' | 'char_count' | 'custom';
+    const checker = core.getInput('checker') as 'grammar' | 'char_count' | 'custom' | 'brand_style';
     const checkerOptions = JSON.parse(core.getInput('checker-options') || '{}');
+    const styleGuideFile = core.getInput('style-guide-file');
     const decider = core.getInput('decider') as 'threshold' | 'noCritical' | 'custom';
     const deciderOptions = JSON.parse(core.getInput('decider-options') || '{}');
+
+    // Load style guide from file if provided
+    if (styleGuideFile && checker === 'brand_style') {
+      const styleGuidePath = path.resolve(styleGuideFile);
+      if (fs.existsSync(styleGuidePath)) {
+        const styleGuideContent = fs.readFileSync(styleGuidePath, 'utf8');
+        checkerOptions.styleGuide = styleGuideContent;
+        core.info(`📖 Loaded style guide from ${styleGuideFile}`);
+      } else {
+        throw new Error(`Style guide file not found: ${styleGuideFile}`);
+      }
+    }
 
     const filePaths = await glob(filesPattern);
     const files = filePaths.map((filePath: string) => ({
@@ -27,7 +40,13 @@ async function run(): Promise<void> {
       deciderOptions
     };
 
-    const result = validateCodebaseStrings(input);
+    // Use async validator for brand_style checker
+    let result: ValidatorOutput;
+    if (checker === 'brand_style') {
+      result = await validateCodebaseStringsAsync(input);
+    } else {
+      result = validateCodebaseStrings(input);
+    }
 
     core.setOutput('results', JSON.stringify(result.results));
     core.setOutput('summary', JSON.stringify(result.summary));
