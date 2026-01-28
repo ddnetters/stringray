@@ -11,6 +11,12 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.1.1](https://github.com/ddnetters/stringly-typed/compare/v1.1.0...v1.1.1) (2026-01-28)
+
+### 🐛 Bug Fixes
+
+* update release template emoji to 🎯 and fix checker example ([4d71ad3](https://github.com/ddnetters/stringly-typed/commit/4d71ad3eda5984d43831d63bfa4e9e78ffb5900a))
+
 ## [1.1.0](https://github.com/ddnetters/stringly-typed/compare/v1.0.3...v1.1.0) (2026-01-28)
 
 ### ✨ Features
