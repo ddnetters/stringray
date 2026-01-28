@@ -36,32 +36,36 @@ jobs:
       - name: Build action
         run: npm run build
       
+      - name: Install semantic-release
+        run: npm install --save-dev semantic-release @semantic-release/changelog @semantic-release/git conventional-changelog-conventionalcommits
+
       - name: Semantic Release
-        uses: cycjimmy/semantic-release-action@v4
-        with:
-          semantic_version: 23
-          extra_plugins: |
-            @semantic-release/changelog
-            @semantic-release/git
-            conventional-changelog-conventionalcommits
+        id: semantic
+        run: |
+          npx semantic-release 2>&1 | tee release-output.txt
+          if grep -q "Published release" release-output.txt; then
+            VERSION=$(grep -oP "Published release \K[0-9]+\.[0-9]+\.[0-9]+" release-output.txt || true)
+            echo "new_release_published=true" >> $GITHUB_OUTPUT
+            echo "new_release_version=$VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "new_release_published=false" >> $GITHUB_OUTPUT
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      
+
       - name: Update major version tag
         if: steps.semantic.outputs.new_release_published == 'true'
         run: |
           VERSION="${{ steps.semantic.outputs.new_release_version }}"
           MAJOR_VERSION="v$(echo $VERSION | cut -d. -f1)"
-          
+
           echo "🏷️ Updating $MAJOR_VERSION to point to v$VERSION"
-          
-          # Delete existing major version tag (locally and remotely)
+
           git tag -d $MAJOR_VERSION 2>/dev/null || true
           git push origin :refs/tags/$MAJOR_VERSION 2>/dev/null || true
-          
-          # Create new major version tag
+
           git tag $MAJOR_VERSION v$VERSION
           git push origin $MAJOR_VERSION
-          
+
           echo "✅ Updated $MAJOR_VERSION tag to v$VERSION"
