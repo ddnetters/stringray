@@ -29,7 +29,9 @@ export function validateCodebaseStrings(input: ValidatorInput): ValidatorOutput 
       end: match.end,
       content: match.content,
       valid: checkResult.valid,
-      message: checkResult.message
+      message: checkResult.message,
+      details: checkResult.details,
+      confidence: checkResult.confidence,
     };
   });
 
@@ -57,7 +59,7 @@ export async function validateCodebaseStringsAsync(
     results = [];
     for (let i = 0; i < stringMatches.length; i += ASYNC_BATCH_SIZE) {
       const batch = stringMatches.slice(i, i + ASYNC_BATCH_SIZE);
-      const batchResults = await Promise.all(
+      const batchSettled = await Promise.allSettled(
         batch.map(async (match) => {
           const checkResult = await checker.check(match.content, input.checkerOptions);
           return {
@@ -68,9 +70,26 @@ export async function validateCodebaseStringsAsync(
             content: match.content,
             valid: checkResult.valid,
             message: checkResult.message,
+            details: checkResult.details,
+            confidence: checkResult.confidence,
           };
         })
       );
+      const batchResults = batchSettled.map((result, index) => {
+        if (result.status === 'fulfilled') {
+          return result.value;
+        }
+        const match = batch[index];
+        return {
+          file: match.file,
+          line: match.line,
+          start: match.start,
+          end: match.end,
+          content: match.content,
+          valid: false,
+          message: `Check failed: ${result.reason instanceof Error ? result.reason.message : 'unknown error'}`,
+        };
+      });
       results.push(...batchResults);
     }
   } else {
@@ -85,6 +104,8 @@ export async function validateCodebaseStringsAsync(
         content: match.content,
         valid: checkResult.valid,
         message: checkResult.message,
+        details: checkResult.details,
+        confidence: checkResult.confidence,
       };
     });
   }

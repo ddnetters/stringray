@@ -1,6 +1,6 @@
 import { initChatModel } from 'langchain/chat_models/universal';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
-import { AsyncChecker } from './base-checker';
+import { AsyncChecker, IS_ASYNC_CHECKER } from './base-checker';
 import {
   CheckResult,
   StyleViolation,
@@ -17,6 +17,7 @@ const SEVERITY_ORDER: Record<string, number> = {
 };
 
 export class BrandStyleChecker implements AsyncChecker {
+  readonly [IS_ASYNC_CHECKER] = true as const;
   private cache: Map<string, CheckResult> = new Map();
 
   async check(
@@ -172,13 +173,20 @@ ${content}
         };
       }
 
-      const parsed = JSON.parse(jsonMatch[0]) as {
-        violations: StyleViolation[];
-        confidence: number;
-      };
+      const parsed = JSON.parse(jsonMatch[0]);
+
+      if (!parsed || typeof parsed !== 'object' || !Array.isArray(parsed.violations)) {
+        return {
+          valid: false,
+          message: 'Failed to parse LLM response: invalid structure (missing violations array)',
+        };
+      }
+
+      const violations = parsed.violations as StyleViolation[];
+      const confidence = typeof parsed.confidence === 'number' ? parsed.confidence : 0.5;
 
       const thresholdLevel = SEVERITY_ORDER[severityThreshold];
-      const significantViolations = parsed.violations.filter(
+      const significantViolations = violations.filter(
         (v) => SEVERITY_ORDER[v.severity] <= thresholdLevel
       );
 
@@ -186,8 +194,8 @@ ${content}
         return {
           valid: true,
           message: 'Content passes brand style check',
-          details: parsed.violations,
-          confidence: parsed.confidence,
+          details: violations,
+          confidence,
         };
       }
 
@@ -201,8 +209,8 @@ ${content}
       return {
         valid: false,
         message: `Brand style violations found: ${errorCount} error(s), ${warningCount} warning(s)`,
-        details: parsed.violations,
-        confidence: parsed.confidence,
+        details: violations,
+        confidence,
       };
     } catch (error) {
       return {
@@ -218,7 +226,7 @@ ${content}
         ? options.styleGuide
         : JSON.stringify(options.styleGuide);
 
-    return `${content}::${styleGuideKey}::${options.model ?? DEFAULT_MODEL}`;
+    return `${content}::${styleGuideKey}::${options.model ?? DEFAULT_MODEL}::${options.temperature ?? DEFAULT_TEMPERATURE}::${options.severityThreshold ?? 'error'}`;
   }
 
   private handleError(error: unknown): CheckResult {

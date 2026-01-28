@@ -55,6 +55,8 @@ export interface ValidationResult {
   content: string;
   valid: boolean;
   message: string;
+  details?: StyleViolation[];
+  confidence?: number;
 }
 
 export interface ValidationSummary {

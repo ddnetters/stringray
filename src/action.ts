@@ -9,20 +9,36 @@ async function run(): Promise<void> {
   try {
     const filesPattern = core.getInput('files') || '**/*.{js,ts,md,json}';
     const checker = core.getInput('checker') as 'grammar' | 'char_count' | 'custom' | 'brand_style';
-    const checkerOptions = JSON.parse(core.getInput('checker-options') || '{}');
     const styleGuideFile = core.getInput('style-guide-file');
     const decider = core.getInput('decider') as 'threshold' | 'noCritical' | 'custom';
-    const deciderOptions = JSON.parse(core.getInput('decider-options') || '{}');
+
+    let checkerOptions: Record<string, unknown>;
+    try {
+      checkerOptions = JSON.parse(core.getInput('checker-options') || '{}');
+    } catch (error) {
+      throw new Error(`Invalid JSON in checker-options: ${error instanceof Error ? error.message : 'unknown error'}`);
+    }
+
+    let deciderOptions: Record<string, unknown>;
+    try {
+      deciderOptions = JSON.parse(core.getInput('decider-options') || '{}');
+    } catch (error) {
+      throw new Error(`Invalid JSON in decider-options: ${error instanceof Error ? error.message : 'unknown error'}`);
+    }
 
     // Load style guide from file if provided
-    if (styleGuideFile && checker === 'brand_style') {
-      const styleGuidePath = path.resolve(styleGuideFile);
-      if (fs.existsSync(styleGuidePath)) {
-        const styleGuideContent = fs.readFileSync(styleGuidePath, 'utf8');
-        checkerOptions.styleGuide = styleGuideContent;
-        core.info(`📖 Loaded style guide from ${styleGuideFile}`);
+    if (styleGuideFile) {
+      if (checker === 'brand_style') {
+        const styleGuidePath = path.resolve(styleGuideFile);
+        if (fs.existsSync(styleGuidePath)) {
+          const styleGuideContent = fs.readFileSync(styleGuidePath, 'utf8');
+          checkerOptions.styleGuide = styleGuideContent;
+          core.info(`📖 Loaded style guide from ${styleGuideFile}`);
+        } else {
+          throw new Error(`Style guide file not found: ${styleGuideFile}`);
+        }
       } else {
-        throw new Error(`Style guide file not found: ${styleGuideFile}`);
+        core.warning(`style-guide-file provided but checker is '${checker}', not 'brand_style'. File will be ignored.`);
       }
     }
 

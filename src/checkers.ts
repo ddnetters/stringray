@@ -1,4 +1,4 @@
-export { Checker, AsyncChecker, isAsyncChecker } from './checkers/base-checker';
+export { Checker, AsyncChecker, isAsyncChecker, IS_ASYNC_CHECKER } from './checkers/base-checker';
 export { CheckerFactory } from './checkers/checker-factory';
 export { GrammarChecker } from './checkers/grammar-checker';
 export { CharCountChecker } from './checkers/char-count-checker';
