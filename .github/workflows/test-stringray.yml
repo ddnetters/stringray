@@ -1,0 +1,46 @@
+name: Test StringRay
+on: 
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-stringray:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build action
+        run: npm run build
+        
+      - name: Test StringRay Action
+        id: stringray
+        uses: ./
+        with:
+          files: 'test-strings.js'
+          checker: 'grammar'
+          decider: 'threshold'
+          checker-options: '{}'
+          decider-options: '{"minValidRatio": 0.8}'
+          
+      - name: Show StringRay Results
+        run: |
+          echo "Results: ${{ steps.stringray.outputs.results }}"
+          echo "Summary: ${{ steps.stringray.outputs.summary }}"
+          echo "Pass: ${{ steps.stringray.outputs.pass }}"
+          
+      - name: List files being processed
+        run: |
+          echo "Files that match pattern:"
+          find . -name "*.ts" -o -name "*.js" | grep -E "^\\./src/" | head -10

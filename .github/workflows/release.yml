@@ -124,7 +124,7 @@ See the full changelog for details of what's included in this release.
 ## 🚀 Quick Start
 
 \`\`\`yaml
-- uses: ddnetters/stringray@$VERSION
+- uses: ddnetters/stringray@\$VERSION
   with:
     files: 'src/**/*.{js,ts,md}'
     checker: 'grammar'
