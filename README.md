@@ -1,4 +1,4 @@
-# StringRay
+# 🌊 StringRay
 
 > **Shine a light on your code's communication.**
 
