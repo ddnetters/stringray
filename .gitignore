@@ -158,3 +158,6 @@ util-scripts/
 
 # Claude
 .claude
+
+# Implementation plans (internal)
+docs/plans/
