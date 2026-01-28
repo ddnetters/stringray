@@ -26,6 +26,10 @@ inputs:
     description: 'JSON string with decider options'
     required: false
     default: '{}'
+  comment:
+    description: 'PR comment behavior: on-failure, always, or never'
+    required: false
+    default: 'on-failure'
 outputs:
   results:
     description: 'JSON string with validation results'
