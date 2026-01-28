@@ -33,7 +33,7 @@
     "@langchain/core": "^1.1.17",
     "@langchain/openai": "^1.2.3",
     "glob": "^13.0.0",
-    "langchain": "^1.2.14",
+    "langchain": "^1.2.15",
     "zod": "^4.3.6"
   }
 }
