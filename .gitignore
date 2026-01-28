@@ -5,7 +5,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Build outputs
-dist/
+# Note: dist/ is NOT ignored - GitHub Actions requires compiled JS to be committed
 lib/
 *.tgz
 
@@ -70,7 +70,6 @@ jspm_packages/
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/
