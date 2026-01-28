@@ -153,6 +153,7 @@ Thumbs.db
 
 # StringRay specific
 .string-validation-cache
+util-scripts/
 
 # Claude
 .claude
