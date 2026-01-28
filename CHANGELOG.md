@@ -11,6 +11,12 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.1.2](https://github.com/ddnetters/stringly-typed/compare/v1.1.1...v1.1.2) (2026-01-28)
+
+### 📚 Documentation
+
+* add Marketplace badge and fix remaining StringRay references ([2472a33](https://github.com/ddnetters/stringly-typed/commit/2472a33de05ccaeb1ee650bbf3ae6a088837f871))
+
 ## [1.1.1](https://github.com/ddnetters/stringly-typed/compare/v1.1.0...v1.1.1) (2026-01-28)
 
 ### 🐛 Bug Fixes
