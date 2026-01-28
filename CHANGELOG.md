@@ -11,6 +11,12 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.0.3](https://github.com/ddnetters/stringly-typed/compare/v1.0.2...v1.0.3) (2026-01-28)
+
+### 🔧 Maintenance
+
+* rebrand from StringRay to Stringly-Typed ([#21](https://github.com/ddnetters/stringly-typed/issues/21)) ([7459713](https://github.com/ddnetters/stringly-typed/commit/7459713c01480dfd94d0379e21f39b41060c4089))
+
 ## [1.0.2](https://github.com/ddnetters/stringly-typed/compare/v1.0.1...v1.0.2) (2026-01-28)
 
 ### 📚 Documentation
