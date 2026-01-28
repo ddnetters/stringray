@@ -10,6 +10,27 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `docs:`, `chore:`, `style:`, etc. → Patch version bump
 - `BREAKING CHANGE` or `!` → Major version bump
 
+
+## 1.0.0 (2026-01-28)
+
+### ✨ Features
+
+* use release branch pattern for dist folder ([b0b620a](https://github.com/ddnetters/stringray/commit/b0b620a7a92ae9d5c75636585b29f05c17e5ae78))
+
+### 🔧 Maintenance
+
+* **deps:** bump langchain from 1.2.14 to 1.2.15 ([#17](https://github.com/ddnetters/stringray/issues/17)) ([8e6fb88](https://github.com/ddnetters/stringray/commit/8e6fb8836c6f9c29e9f3d0188e45fef74f210dfc))
+* **deps:** bump zod from 3.25.76 to 4.3.6 ([#16](https://github.com/ddnetters/stringray/issues/16)) ([e61af8d](https://github.com/ddnetters/stringray/commit/e61af8d07b9540c984b1b1e27c8bbc596219bb68))
+* **deps:** configure dependabot to use semver PR titles ([#15](https://github.com/ddnetters/stringray/issues/15)) ([c37215e](https://github.com/ddnetters/stringray/commit/c37215eda60a8bd421e904cc8f30bd8d4af597e1))
+* upgrade to ESLint 9 and typescript-eslint v8 ([#14](https://github.com/ddnetters/stringray/issues/14)) ([f109891](https://github.com/ddnetters/stringray/commit/f109891629eba5e0e039471d19cd360fecba9e55))
+
+### 👷 CI/CD
+
+* add manual trigger to auto-release workflow ([c199a99](https://github.com/ddnetters/stringray/commit/c199a99dc18a9d28bde9ac2ba974e6e65e2f2cf7))
+* add semantic PR title validation ([0e8e4c3](https://github.com/ddnetters/stringray/commit/0e8e4c3862503051b68bff10a1517be107ea6ed9))
+* run semantic-release directly via npm instead of action ([795fa11](https://github.com/ddnetters/stringray/commit/795fa117f3a821829b0f4543c13bc9f750c268c1))
+* use GH_TOKEN for semantic-release to bypass branch protection ([f9bd553](https://github.com/ddnetters/stringray/commit/f9bd553a00976936012e6a2d4b5d8aae103a6c3e))
+
 ## [Unreleased]
 
 Changes that have been merged to main but not yet released.
