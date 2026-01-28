@@ -1,12 +1,20 @@
 import { ValidatorOutput, ValidationResult } from './types';
 
 const MAX_CONTENT_LENGTH = 50;
-const MAX_ISSUES_PER_FILE = 5;
+const MAX_ISSUES_PER_FILE = 10;
 const MAX_FILES = 10;
 
 function truncate(str: string, maxLength: number): string {
   if (str.length <= maxLength) return str;
   return str.slice(0, maxLength - 3) + '...';
+}
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\|/g, '\\|');
 }
 
 function groupByFile(results: ValidationResult[]): Map<string, ValidationResult[]> {
@@ -46,21 +54,31 @@ export function formatPRComment(output: ValidatorOutput): string {
       break;
     }
 
-    comment += `#### \`${file}\`\n\n`;
+    const issueCount = fileResults.length;
+    const displayCount = Math.min(issueCount, MAX_ISSUES_PER_FILE);
 
+    // Collapsible section per file
+    comment += `<details>\n`;
+    comment += `<summary><code>${file}</code> (${issueCount} issue${issueCount > 1 ? 's' : ''})</summary>\n\n`;
+
+    // Table header
+    comment += `| Line | Content | Issue |\n`;
+    comment += `|------|---------|-------|\n`;
+
+    // Table rows
     const displayResults = fileResults.slice(0, MAX_ISSUES_PER_FILE);
     for (const result of displayResults) {
-      const content = truncate(result.content, MAX_CONTENT_LENGTH);
-      comment += `- **Line ${result.line}:** \`${content}\`\n`;
-      comment += `  - ${result.message}\n`;
+      const content = escapeHtml(truncate(result.content, MAX_CONTENT_LENGTH));
+      const message = escapeHtml(result.message);
+      comment += `| ${result.line} | \`${content}\` | ${message} |\n`;
     }
 
     if (fileResults.length > MAX_ISSUES_PER_FILE) {
       const remaining = fileResults.length - MAX_ISSUES_PER_FILE;
-      comment += `- *...and ${remaining} more issue(s) in this file*\n`;
+      comment += `| ... | *${remaining} more* | |\n`;
     }
 
-    comment += `\n`;
+    comment += `\n</details>\n\n`;
     fileCount++;
   }
 
