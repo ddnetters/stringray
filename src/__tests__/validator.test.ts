@@ -1,5 +1,18 @@
-import { validateCodebaseStrings } from '../validator';
+import { validateCodebaseStrings, validateCodebaseStringsAsync } from '../validator';
 import { ValidatorInput } from '../types';
+
+// Mock the langchain modules for async validator tests
+jest.mock('langchain/chat_models/universal', () => ({
+  initChatModel: jest.fn(),
+}));
+
+jest.mock('@langchain/core/messages', () => ({
+  HumanMessage: jest.fn().mockImplementation((content) => ({ content, role: 'human' })),
+  SystemMessage: jest.fn().mockImplementation((content) => ({ content, role: 'system' })),
+}));
+
+import { initChatModel } from 'langchain/chat_models/universal';
+const mockInitChatModel = initChatModel as jest.MockedFunction<typeof initChatModel>;
 
 describe('validateCodebaseStrings', () => {
   it('should validate using grammar checker and threshold decider', () => {
@@ -176,5 +189,139 @@ describe('validateCodebaseStrings', () => {
     expect(result.results[1].valid).toBe(false);
     expect(result.results[2].valid).toBe(false);
     expect(result.summary.pass).toBe(false);
+  });
+});
+
+describe('validateCodebaseStringsAsync', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should work with sync checkers', async () => {
+    const input: ValidatorInput = {
+      files: [
+        { path: 'test.js', content: 'const msg = "Hello world";' }
+      ],
+      checker: 'grammar',
+      decider: 'threshold'
+    };
+
+    const result = await validateCodebaseStringsAsync(input);
+
+    expect(result.results).toHaveLength(1);
+    expect(result.results[0].content).toBe('Hello world');
+    expect(result.results[0].valid).toBe(true);
+    expect(result.summary.pass).toBe(true);
+  });
+
+  it('should work with brand_style async checker', async () => {
+    const mockModel = {
+      invoke: jest.fn().mockResolvedValue({
+        content: JSON.stringify({
+          violations: [],
+          confidence: 1.0,
+        }),
+      }),
+    };
+    mockInitChatModel.mockResolvedValue(mockModel as any);
+
+    const input: ValidatorInput = {
+      files: [
+        { path: 'test.js', content: 'const msg = "The customer completed the purchase.";' }
+      ],
+      checker: 'brand_style',
+      checkerOptions: {
+        styleGuide: 'Use "customer" not "user".',
+      },
+      decider: 'threshold'
+    };
+
+    const result = await validateCodebaseStringsAsync(input);
+
+    expect(result.results).toHaveLength(1);
+    expect(result.results[0].valid).toBe(true);
+    expect(result.summary.pass).toBe(true);
+  });
+
+  it('should handle brand_style violations', async () => {
+    const mockModel = {
+      invoke: jest.fn().mockResolvedValue({
+        content: JSON.stringify({
+          violations: [
+            {
+              type: 'terminology',
+              severity: 'error',
+              original: 'user',
+              suggestion: 'customer',
+              explanation: 'Use "customer" instead of "user"',
+            },
+          ],
+          confidence: 0.95,
+        }),
+      }),
+    };
+    mockInitChatModel.mockResolvedValue(mockModel as any);
+
+    const input: ValidatorInput = {
+      files: [
+        { path: 'test.js', content: 'const msg = "The user completed the purchase.";' }
+      ],
+      checker: 'brand_style',
+      checkerOptions: {
+        styleGuide: 'Use "customer" not "user".',
+      },
+      decider: 'threshold'
+    };
+
+    const result = await validateCodebaseStringsAsync(input);
+
+    expect(result.results).toHaveLength(1);
+    expect(result.results[0].valid).toBe(false);
+    expect(result.summary.pass).toBe(false);
+  });
+
+  it('should batch async checks to avoid API overload', async () => {
+    const mockModel = {
+      invoke: jest.fn().mockResolvedValue({
+        content: JSON.stringify({ violations: [], confidence: 1.0 }),
+      }),
+    };
+    mockInitChatModel.mockResolvedValue(mockModel as any);
+
+    // Create a file with multiple strings
+    const strings = Array.from({ length: 15 }, (_, i) => `"String ${i}"`).join(', ');
+    const input: ValidatorInput = {
+      files: [
+        { path: 'test.js', content: `const msgs = [${strings}];` }
+      ],
+      checker: 'brand_style',
+      checkerOptions: {
+        styleGuide: 'Test style guide',
+      },
+      decider: 'threshold'
+    };
+
+    const result = await validateCodebaseStringsAsync(input);
+
+    expect(result.results).toHaveLength(15);
+    expect(result.summary.pass).toBe(true);
+    // All strings should have been checked
+    expect(mockModel.invoke).toHaveBeenCalledTimes(15);
+  });
+
+  it('should handle empty files array', async () => {
+    const input: ValidatorInput = {
+      files: [],
+      checker: 'brand_style',
+      checkerOptions: {
+        styleGuide: 'Test style guide',
+      },
+      decider: 'threshold'
+    };
+
+    const result = await validateCodebaseStringsAsync(input);
+
+    expect(result.results).toHaveLength(0);
+    expect(result.summary.pass).toBe(true);
   });
 });
