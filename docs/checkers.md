@@ -245,6 +245,121 @@ Custom logic errors are caught and reported:
 { valid: false, message: "No custom logic provided" }
 ```
 
+## Brand Style Checker
+
+The brand style checker uses LLM-powered validation via LangChain.js to check content against a brand style guide. This enables AI-powered validation for tone, terminology, and style compliance.
+
+> **Note:** This is an async checker. Use `validateCodebaseStringsAsync()` instead of `validateCodebaseStrings()`.
+
+### Usage
+
+```yaml
+checker: 'brand_style'
+checker-options: |
+  {
+    "styleGuide": "# Acme Corp Style Guide\n- Use active voice\n- Say 'customers' not 'users'\n- Keep sentences under 25 words",
+    "model": "openai:gpt-4o-mini",
+    "severityThreshold": "warning"
+  }
+```
+
+### Configuration
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `styleGuide` | string \| object | **required** | The brand style guide (text or structured config) |
+| `model` | string | `openai:gpt-4o-mini` | LLM model in `provider:model` format |
+| `severityThreshold` | string | `error` | What counts as invalid: `error`, `warning`, or `suggestion` |
+| `temperature` | number | 0 | LLM temperature (0-1) |
+| `timeout` | number | - | Request timeout in milliseconds |
+| `enableCache` | boolean | true | Cache identical string checks |
+
+### Model Providers
+
+| Provider | Model Format | Environment Variable |
+|----------|-------------|---------------------|
+| OpenAI | `openai:gpt-4o-mini` | `OPENAI_API_KEY` |
+| Anthropic | `anthropic:claude-sonnet-4-5-20250929` | `ANTHROPIC_API_KEY` |
+| Google | `google:gemini-pro` | `GOOGLE_API_KEY` |
+
+### Style Guide Formats
+
+#### Simple Text Format
+
+```yaml
+checker-options: |
+  {
+    "styleGuide": "# Brand Guidelines\n- Use active voice\n- Say 'customers' not 'users'\n- Avoid jargon"
+  }
+```
+
+#### Structured Config Format
+
+```yaml
+checker-options: |
+  {
+    "styleGuide": {
+      "rules": [
+        {
+          "name": "Active Voice",
+          "description": "Always use active voice instead of passive",
+          "severity": "error"
+        },
+        {
+          "name": "Sentence Length",
+          "description": "Keep sentences under 25 words",
+          "severity": "warning"
+        }
+      ],
+      "terminology": [
+        { "incorrect": "user", "correct": "customer" },
+        { "incorrect": "click", "correct": "select" }
+      ]
+    }
+  }
+```
+
+### Return Values
+
+```typescript
+interface CheckResult {
+  valid: boolean;
+  message: string;
+  details?: StyleViolation[];  // Detailed violations
+  confidence?: number;         // LLM confidence (0-1)
+}
+
+interface StyleViolation {
+  type: 'tone' | 'terminology' | 'formatting' | 'grammar' | 'other';
+  severity: 'error' | 'warning' | 'suggestion';
+  original: string;
+  suggestion?: string;
+  explanation: string;
+}
+
+// Examples:
+{ valid: true, message: "Content passes brand style check", confidence: 1.0 }
+{ valid: false, message: "Brand style violations found: 1 error(s), 2 warning(s)", confidence: 0.95 }
+```
+
+### Error Handling
+
+The checker handles common API errors gracefully:
+
+| Error | Message |
+|-------|---------|
+| Missing API key | "Authentication failed. Please check your API key environment variable." |
+| Rate limiting | "Rate limit exceeded. Please try again later." |
+| Timeout | "Request timed out. Please try again." |
+| Invalid response | "Failed to parse LLM response: ..." |
+
+### Best Practices
+
+- **Keep style guides focused** - Include only the most important rules
+- **Use severity levels** - Mark critical violations as `error`, optional improvements as `suggestion`
+- **Enable caching** - Identical strings won't incur redundant API calls
+- **Set appropriate thresholds** - Use `severityThreshold: 'error'` for strict validation, `'suggestion'` for comprehensive feedback
+
 ## Checker Factory
 
 Create checkers programmatically:
@@ -254,6 +369,12 @@ import { CheckerFactory } from './checkers';
 
 const grammarChecker = CheckerFactory.createChecker('grammar');
 const result = grammarChecker.check('Hello world');
+
+// For async checkers like brand_style
+const brandChecker = CheckerFactory.createChecker('brand_style');
+const asyncResult = await brandChecker.check('The user clicked the button', {
+  styleGuide: 'Use "customer" not "user". Use "select" not "click".'
+});
 ```
 
 ## Best Practices

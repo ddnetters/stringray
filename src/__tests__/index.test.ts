@@ -1,11 +1,15 @@
-import { 
-  validateCodebaseStrings, 
-  StringExtractor, 
-  CheckerFactory, 
+import {
+  validateCodebaseStrings,
+  validateCodebaseStringsAsync,
+  StringExtractor,
+  CheckerFactory,
   DeciderFactory,
   GrammarChecker,
   CharCountChecker,
   CustomChecker,
+  BrandStyleChecker,
+  AsyncChecker,
+  isAsyncChecker,
   ThresholdDecider,
   NoCriticalDecider,
   CustomDecider
@@ -14,6 +18,10 @@ import {
 describe('Index exports', () => {
   it('should export main validation function', () => {
     expect(typeof validateCodebaseStrings).toBe('function');
+  });
+
+  it('should export async validation function', () => {
+    expect(typeof validateCodebaseStringsAsync).toBe('function');
   });
 
   it('should export StringExtractor class', () => {
@@ -35,10 +43,22 @@ describe('Index exports', () => {
     expect(GrammarChecker).toBeDefined();
     expect(CharCountChecker).toBeDefined();
     expect(CustomChecker).toBeDefined();
-    
+    expect(BrandStyleChecker).toBeDefined();
+
     expect(new GrammarChecker()).toBeInstanceOf(GrammarChecker);
     expect(new CharCountChecker()).toBeInstanceOf(CharCountChecker);
     expect(new CustomChecker()).toBeInstanceOf(CustomChecker);
+    expect(new BrandStyleChecker()).toBeInstanceOf(BrandStyleChecker);
+  });
+
+  it('should export async checker utilities', () => {
+    expect(typeof isAsyncChecker).toBe('function');
+
+    const syncChecker = new GrammarChecker();
+    const asyncChecker = new BrandStyleChecker();
+
+    expect(isAsyncChecker(syncChecker)).toBe(false);
+    expect(isAsyncChecker(asyncChecker)).toBe(true);
   });
 
   it('should export decider classes', () => {

@@ -48,6 +48,90 @@ jobs:
           decider-options: '{"minValidRatio": 0.9}'
 ```
 
+### Brand Style Validation (AI-Powered)
+
+Validate content against your brand style guide using LLM.
+
+#### Using a Style Guide File (Recommended)
+
+Create a `STYLE_GUIDE.md` file in your repository:
+
+```markdown
+# Acme Corp Brand Style Guide
+
+## Voice & Tone
+- Use active voice, not passive
+- Be friendly but professional
+- Keep sentences under 25 words
+
+## Terminology
+- Say "customers" not "users"
+- Say "select" not "click"
+- Say "start" not "initiate"
+
+## Formatting
+- Use sentence case for headings
+- Avoid exclamation marks
+```
+
+Then reference it in your workflow:
+
+```yaml
+name: Brand Style Validation
+on: [push, pull_request]
+
+jobs:
+  brand-style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Validate brand style
+        uses: ddnetters/string-validator-action@v1
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        with:
+          files: 'src/**/*.{js,ts,jsx,tsx}'
+          checker: 'brand_style'
+          style-guide-file: 'STYLE_GUIDE.md'
+          checker-options: |
+            {
+              "model": "openai:gpt-4o-mini",
+              "severityThreshold": "warning"
+            }
+          decider: 'threshold'
+          decider-options: '{"minValidRatio": 0.9}'
+```
+
+#### Using Inline Style Guide
+
+For simpler style guides, you can pass them inline:
+
+```yaml
+name: Brand Style Validation
+on: [push, pull_request]
+
+jobs:
+  brand-style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Validate brand style
+        uses: ddnetters/string-validator-action@v1
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        with:
+          files: 'src/**/*.{js,ts,jsx,tsx}'
+          checker: 'brand_style'
+          checker-options: |
+            {
+              "styleGuide": "# Acme Corp Style Guide\n- Use active voice\n- Say 'customers' not 'users'\n- Keep sentences under 25 words\n- Avoid jargon and technical terms",
+              "model": "openai:gpt-4o-mini",
+              "severityThreshold": "warning"
+            }
+          decider: 'threshold'
+          decider-options: '{"minValidRatio": 0.9}'
+```
+
 ## Advanced Examples
 
 ### Multi-Stage Validation
@@ -481,6 +565,63 @@ if (result.summary.pass) {
     .forEach(r => console.error(`  ${r.file}:${r.line} - ${r.message}`));
   process.exit(1);
 }
+```
+
+### Brand Style Validation CLI
+
+Create a CLI tool for AI-powered brand style validation:
+
+```javascript
+#!/usr/bin/env node
+// scripts/validate-brand-style.js
+
+const { validateCodebaseStringsAsync } = require('../dist');
+const fs = require('fs');
+const glob = require('glob');
+
+async function main() {
+  const files = glob.sync(process.argv[2] || 'src/**/*.js').map(path => ({
+    path,
+    content: fs.readFileSync(path, 'utf8')
+  }));
+
+  const styleGuide = fs.readFileSync('STYLE_GUIDE.md', 'utf8');
+
+  const result = await validateCodebaseStringsAsync({
+    files,
+    checker: 'brand_style',
+    checkerOptions: {
+      styleGuide,
+      model: 'openai:gpt-4o-mini',
+      severityThreshold: 'warning'
+    },
+    decider: 'threshold',
+    deciderOptions: { minValidRatio: 0.9 }
+  });
+
+  if (result.summary.pass) {
+    console.log('✅', result.summary.reason);
+    process.exit(0);
+  } else {
+    console.error('❌', result.summary.reason);
+    console.error('\nStyle violations:');
+    result.results
+      .filter(r => !r.valid)
+      .forEach(r => {
+        console.error(`\n  ${r.file}:${r.line}`);
+        console.error(`  Content: "${r.content}"`);
+        if (r.details) {
+          r.details.forEach(v => {
+            console.error(`    [${v.severity}] ${v.type}: ${v.explanation}`);
+            if (v.suggestion) console.error(`    Suggestion: ${v.suggestion}`);
+          });
+        }
+      });
+    process.exit(1);
+  }
+}
+
+main().catch(console.error);
 ```
 
 ## Next Steps

@@ -1,4 +1,4 @@
-import { GrammarChecker, CharCountChecker, CustomChecker, CheckerFactory } from '../../checkers';
+import { GrammarChecker, CharCountChecker, CustomChecker, CheckerFactory, BrandStyleChecker } from '../../checkers';
 
 describe('GrammarChecker', () => {
   let checker: GrammarChecker;
@@ -144,6 +144,11 @@ describe('CheckerFactory', () => {
   it('should create CustomChecker', () => {
     const checker = CheckerFactory.createChecker('custom');
     expect(checker).toBeInstanceOf(CustomChecker);
+  });
+
+  it('should create BrandStyleChecker', () => {
+    const checker = CheckerFactory.createChecker('brand_style');
+    expect(checker).toBeInstanceOf(BrandStyleChecker);
   });
 
   it('should throw error for unknown checker type', () => {
