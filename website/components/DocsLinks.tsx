@@ -83,7 +83,7 @@ export default function DocsLinks() {
               rel="noopener noreferrer"
               className="group flex items-start gap-4 p-4 rounded-lg border border-transparent hover:border-[var(--chocolate-brown)] hover:bg-white transition-all"
             >
-              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[var(--mustard-gold)] bg-opacity-20 flex items-center justify-center text-[var(--mustard-gold)] group-hover:bg-[var(--burnt-sienna)] group-hover:text-white transition-colors">
+              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[var(--mustard-gold)] flex items-center justify-center text-[var(--chocolate-brown)] group-hover:bg-[var(--burnt-sienna)] group-hover:text-white transition-colors">
                 {doc.icon}
               </div>
               <div>
