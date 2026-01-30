@@ -3,6 +3,8 @@ name: 🤖 Auto Release
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'website/**'
   workflow_dispatch:
 
 jobs:
