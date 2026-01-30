@@ -11,6 +11,12 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.3.0](https://github.com/ddnetters/stringly-typed/compare/v1.2.1...v1.3.0) (2026-01-30)
+
+### ✨ Features
+
+* **website:** add syntax highlighting to code blocks ([0118c86](https://github.com/ddnetters/stringly-typed/commit/0118c862c2ff33cfcf8cb13de136b9bae8fbdd02))
+
 ## [1.2.1](https://github.com/ddnetters/stringly-typed/compare/v1.2.0...v1.2.1) (2026-01-30)
 
 ### 🐛 Bug Fixes
