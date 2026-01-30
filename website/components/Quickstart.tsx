@@ -1,7 +1,57 @@
 "use client";
 
 import { useState } from "react";
-import { Highlight, themes } from "prism-react-renderer";
+import { Highlight, type PrismTheme } from "prism-react-renderer";
+
+// Custom theme matching site colors
+const customTheme: PrismTheme = {
+  plain: {
+    color: "#F5F0E8", // warm cream
+    backgroundColor: "#3D2B1F", // chocolate brown
+  },
+  styles: [
+    {
+      types: ["comment", "prolog", "doctype", "cdata"],
+      style: { color: "#A89F91", fontStyle: "italic" as const },
+    },
+    {
+      types: ["punctuation"],
+      style: { color: "#D4A574" }, // muted gold
+    },
+    {
+      types: ["property", "tag", "boolean", "number", "constant", "symbol"],
+      style: { color: "#E8B87D" }, // mustard gold
+    },
+    {
+      types: ["selector", "attr-name", "string", "char", "builtin", "inserted"],
+      style: { color: "#E07B5E" }, // burnt sienna / coral
+    },
+    {
+      types: ["atrule", "attr-value", "keyword"],
+      style: { color: "#8ECAE6" }, // soft blue
+    },
+    {
+      types: ["function", "class-name"],
+      style: { color: "#F4D35E" }, // bright gold
+    },
+    {
+      types: ["regex", "important", "variable"],
+      style: { color: "#95D5B2" }, // mint green
+    },
+    {
+      types: ["title"],
+      style: { color: "#F4D35E", fontWeight: "bold" as const }, // headers in gold
+    },
+    {
+      types: ["bold"],
+      style: { fontWeight: "bold" as const },
+    },
+    {
+      types: ["italic"],
+      style: { fontStyle: "italic" as const },
+    },
+  ],
+};
 
 const tabs = [
   {
@@ -119,14 +169,14 @@ export default function Quickstart() {
           {/* Code Content */}
           {activeContent && (
             <Highlight
-              theme={themes.dracula}
+              theme={customTheme}
               code={activeContent.code}
               language={activeContent.language as "yaml" | "markdown"}
             >
               {({ className, style, tokens, getLineProps, getTokenProps }) => (
                 <pre
                   className={`${className} p-6 text-sm font-mono overflow-x-auto leading-relaxed max-h-[400px] overflow-y-auto scan-lines`}
-                  style={{ ...style, backgroundColor: "var(--chocolate-brown)" }}
+                  style={style}
                 >
                   {tokens.map((line, i) => (
                     <div key={i} {...getLineProps({ line })}>
