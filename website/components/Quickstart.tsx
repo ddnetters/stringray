@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Highlight, themes } from "prism-react-renderer";
 
 const tabs = [
   {
@@ -116,9 +117,28 @@ export default function Quickstart() {
           </div>
 
           {/* Code Content */}
-          <pre className="bg-[var(--chocolate-brown)] p-6 text-sm font-mono text-[var(--warm-cream)] overflow-x-auto leading-relaxed max-h-[400px] overflow-y-auto scan-lines">
-            <code>{activeContent?.code}</code>
-          </pre>
+          {activeContent && (
+            <Highlight
+              theme={themes.dracula}
+              code={activeContent.code}
+              language={activeContent.language as "yaml" | "markdown"}
+            >
+              {({ className, style, tokens, getLineProps, getTokenProps }) => (
+                <pre
+                  className={`${className} p-6 text-sm font-mono overflow-x-auto leading-relaxed max-h-[400px] overflow-y-auto scan-lines`}
+                  style={{ ...style, backgroundColor: "var(--chocolate-brown)" }}
+                >
+                  {tokens.map((line, i) => (
+                    <div key={i} {...getLineProps({ line })}>
+                      {line.map((token, key) => (
+                        <span key={key} {...getTokenProps({ token })} />
+                      ))}
+                    </div>
+                  ))}
+                </pre>
+              )}
+            </Highlight>
+          )}
         </div>
 
         {/* Step indicator */}
