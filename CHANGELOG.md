@@ -11,6 +11,12 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.4.1](https://github.com/ddnetters/stringly-typed/compare/v1.4.0...v1.4.1) (2026-01-31)
+
+### 🐛 Bug Fixes
+
+* **ci:** require Node 20+ and use bundle instead of build ([4000e1d](https://github.com/ddnetters/stringly-typed/commit/4000e1dffa8df775d6ee320d77d70105ed61d272))
+
 ## [1.4.0](https://github.com/ddnetters/stringly-typed/compare/v1.3.0...v1.4.0) (2026-01-31)
 
 ### ✨ Features
