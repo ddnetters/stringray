@@ -130,6 +130,7 @@ Stringly-Typed also supports non-AI checkers for simpler validation:
 | [Configuration](docs/configuration.md) | All options in detail |
 | [Checkers](docs/checkers.md) | char_count, custom, brand_style |
 | [Deciders](docs/deciders.md) | threshold, noCritical, custom |
+| [LLM Providers](docs/providers.md) | OpenAI, OpenRouter, Anthropic, Azure, AWS Bedrock, Groq, and more |
 | [Examples](docs/examples.md) | Real-world usage scenarios |
 | [API Reference](docs/api.md) | TypeScript interfaces |
 | [Troubleshooting](docs/troubleshooting.md) | Common issues |
