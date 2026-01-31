@@ -11,6 +11,12 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.4.9](https://github.com/ddnetters/stringly-typed/compare/v1.4.8...v1.4.9) (2026-01-31)
+
+### 📚 Documentation
+
+* restructure README based on awesome-readme patterns ([#23](https://github.com/ddnetters/stringly-typed/issues/23)) ([318af24](https://github.com/ddnetters/stringly-typed/commit/318af2467810617efd271998fa969feb14eeae95)), closes [#F4E8DD](https://github.com/ddnetters/stringly-typed/issues/F4E8DD)
+
 ## [1.4.8](https://github.com/ddnetters/stringly-typed/compare/v1.4.7...v1.4.8) (2026-01-31)
 
 ### 🐛 Bug Fixes
