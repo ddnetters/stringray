@@ -3,46 +3,71 @@
 import Terminal from "./Terminal";
 import GitHubComment from "./GitHubComment";
 
-// Sample data - replace with actual output from running the action
+// Real output from stringly-typed-demo repository
 const terminalLines = [
-  { text: "$ stringly-typed --files 'src/**/*.tsx'", type: "command" as const },
+  { text: "$ npx stringly-typed --files 'src/**/*.ts'", type: "command" as const },
   { text: "", type: "output" as const },
-  { text: "Stringly-Typed v1.0.0", type: "output" as const },
-  { text: "Scanning files...", type: "output" as const },
+  { text: "\uD83C\uDFAF Stringly-Typed v1.4.14", type: "output" as const },
+  { text: "\uD83D\uDCD6 Loaded style guide from STYLE_GUIDE.md", type: "output" as const },
   { text: "", type: "output" as const },
-  { text: "src/components/Button.tsx", type: "file" as const },
-  { text: '  Line 12: "Click here to continue"', type: "output" as const },
-  { text: "  \u2717 Use \"Select\" not \"Click\" (terminology)", type: "error" as const },
+  { text: "src/bad-examples.ts", type: "file" as const },
+  { text: '  Line 6: "ERROR: Persistence layer failed..."', type: "output" as const },
+  { text: "  \u2717 Technical jargon, unfriendly tone", type: "error" as const },
   { text: "", type: "output" as const },
-  { text: '  Line 18: "Your order has been placed"', type: "output" as const },
-  { text: "  \u2713 Matches brand voice", type: "success" as const },
+  { text: '  Line 9: "The user\'s session has been..."', type: "output" as const },
+  { text: "  \u2717 Passive voice, refers to \"the user\"", type: "error" as const },
   { text: "", type: "output" as const },
-  { text: "src/utils/errors.ts", type: "file" as const },
-  { text: '  Line 5: "An error was encountered by the system"', type: "output" as const },
-  { text: "  \u2717 Use active voice: \"Something went wrong\"", type: "error" as const },
+  { text: "src/good-examples.ts", type: "file" as const },
+  { text: '  Line 5: "Welcome back! Ready to pick up..."', type: "output" as const },
+  { text: "  \u2713 Friendly, uses active voice", type: "success" as const },
   { text: "", type: "output" as const },
-  { text: "Summary: 4/6 strings valid (67%)", type: "output" as const },
-  { text: "Status: FAILED", type: "error" as const },
+  { text: '  Line 11: "Your changes have been saved!"', type: "output" as const },
+  { text: "  \u2713 Clear, positive confirmation", type: "success" as const },
+  { text: "", type: "output" as const },
+  { text: "\uD83D\uDCCA Processed 98 strings", type: "output" as const },
+  { text: "\u2705 80 valid, \u274C 18 invalid", type: "output" as const },
+  { text: "Status: FAILED - Found 15 critical issue(s)", type: "error" as const },
 ];
 
+// Real data matching the actual GitHub PR comment format
 const commentData = {
-  author: "stringly-typed",
-  avatarUrl: "/stringly-typed-avatar.svg",
-  timestamp: "just now",
-  validCount: 4,
-  totalCount: 6,
-  issues: [
+  timestamp: "2 minutes ago",
+  criticalCount: 15,
+  files: [
     {
-      file: "src/components/Button.tsx",
-      line: 12,
-      original: "Click here to continue",
-      issue: 'Use "Select" not "Click" (terminology)',
+      file: "src/bad-examples.ts",
+      issues: [
+        {
+          line: 6,
+          content: "ERROR: Persistence layer failed to commit trans...",
+          issue: "Brand style violations found: 1 error(s), 0 warning(s)",
+        },
+        {
+          line: 9,
+          content: "The user's session has been successfully authen...",
+          issue: "Brand style violations found: 1 error(s), 0 warning(s)",
+        },
+        {
+          line: 18,
+          content: "WARNING: THIS ACTION CANNOT BE UNDONE. ALL DATA...",
+          issue: "Brand style violations found: 1 error(s), 0 warning(s)",
+        },
+      ],
     },
     {
-      file: "src/utils/errors.ts",
-      line: 5,
-      original: "An error was encountered by the system",
-      issue: 'Use active voice: "Something went wrong"',
+      file: "src/example-strings.ts",
+      issues: [
+        {
+          line: 5,
+          content: "ERROR: Connection was terminated by the server...",
+          issue: "Brand style violations found: 1 error(s), 0 warning(s)",
+        },
+        {
+          line: 11,
+          content: "YOUR REQUEST COULD NOT BE PROCESSED AT THIS TIM...",
+          issue: "Brand style violations found: 1 error(s), 0 warning(s)",
+        },
+      ],
     },
   ],
 };
