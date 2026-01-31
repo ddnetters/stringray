@@ -11,6 +11,12 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.4.3](https://github.com/ddnetters/stringly-typed/compare/v1.4.2...v1.4.3) (2026-01-31)
+
+### 🔧 Maintenance
+
+* update website URL to stringly-typed.netters.dev ([d1d7775](https://github.com/ddnetters/stringly-typed/commit/d1d77753fcfdccc4252a3ee8373f53bf558069e0))
+
 ## [1.4.2](https://github.com/ddnetters/stringly-typed/compare/v1.4.1...v1.4.2) (2026-01-31)
 
 ### 🐛 Bug Fixes
