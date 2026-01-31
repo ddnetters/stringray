@@ -11,6 +11,12 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.4.2](https://github.com/ddnetters/stringly-typed/compare/v1.4.1...v1.4.2) (2026-01-31)
+
+### 🐛 Bug Fixes
+
+* **ci:** properly handle JSON output in test workflow ([c4a98fa](https://github.com/ddnetters/stringly-typed/commit/c4a98fab62a63192c098b32e709e1c63496b83aa))
+
 ## [1.4.1](https://github.com/ddnetters/stringly-typed/compare/v1.4.0...v1.4.1) (2026-01-31)
 
 ### 🐛 Bug Fixes
