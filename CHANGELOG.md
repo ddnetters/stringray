@@ -11,6 +11,12 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.4.7](https://github.com/ddnetters/stringly-typed/compare/v1.4.6...v1.4.7) (2026-01-31)
+
+### 🐛 Bug Fixes
+
+* preserve action.yml in release branch by saving SHA before orphan ([#25](https://github.com/ddnetters/stringly-typed/issues/25)) ([44ceab6](https://github.com/ddnetters/stringly-typed/commit/44ceab63777e1387ae98015fe3d51da34dc1bce4)), closes [#24](https://github.com/ddnetters/stringly-typed/issues/24)
+
 ## [1.4.6](https://github.com/ddnetters/stringly-typed/compare/v1.4.5...v1.4.6) (2026-01-31)
 
 ### 📚 Documentation
