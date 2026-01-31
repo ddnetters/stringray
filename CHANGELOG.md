@@ -11,6 +11,12 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.6.0](https://github.com/ddnetters/stringly-typed/compare/v1.5.0...v1.6.0) (2026-01-31)
+
+### ✨ Features
+
+* **website:** add PostHog analytics ([6e8f3fb](https://github.com/ddnetters/stringly-typed/commit/6e8f3fb374ce32605f7001cb3685ad2c9f9ea6ef))
+
 ## [1.5.0](https://github.com/ddnetters/stringly-typed/compare/v1.4.14...v1.5.0) (2026-01-31)
 
 ### ✨ Features
