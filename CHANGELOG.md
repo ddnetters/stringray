@@ -11,6 +11,12 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.4.11](https://github.com/ddnetters/stringly-typed/compare/v1.4.10...v1.4.11) (2026-01-31)
+
+### 🐛 Bug Fixes
+
+* use static imports for langchain providers to fix bundling ([#27](https://github.com/ddnetters/stringly-typed/issues/27)) ([2945d74](https://github.com/ddnetters/stringly-typed/commit/2945d747678ba778502a9151bbe63e7f7cfd8325)), closes [#26](https://github.com/ddnetters/stringly-typed/issues/26)
+
 ## [1.4.10](https://github.com/ddnetters/stringly-typed/compare/v1.4.9...v1.4.10) (2026-01-31)
 
 ### 🔧 Maintenance
