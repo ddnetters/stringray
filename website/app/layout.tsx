@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Righteous, Source_Serif_4, JetBrains_Mono } from "next/font/google";
+import { PostHogProvider } from "@/components/PostHogProvider";
 import "./globals.css";
 
 const righteous = Righteous({
@@ -72,8 +73,10 @@ export default function RootLayout({
       <body
         className={`${righteous.variable} ${sourceSerif.variable} ${jetbrainsMono.variable} antialiased`}
       >
-        <div className="grain-overlay" aria-hidden="true" />
-        {children}
+        <PostHogProvider>
+          <div className="grain-overlay" aria-hidden="true" />
+          {children}
+        </PostHogProvider>
       </body>
     </html>
   );
