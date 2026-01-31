@@ -10,6 +10,7 @@ import {
 
 const DEFAULT_MODEL = 'openai:gpt-4o-mini';
 const DEFAULT_TEMPERATURE = 0;
+const MAX_RETRIES = 2;
 const SEVERITY_ORDER: Record<string, number> = {
   error: 0,
   warning: 1,
@@ -39,7 +40,7 @@ export class BrandStyleChecker implements AsyncChecker {
     try {
       const result = await this.performCheck(content, options);
 
-      if (options.enableCache !== false) {
+      if (options.enableCache !== false && result.valid) {
         this.cache.set(cacheKey, result);
       }
 
@@ -64,17 +65,32 @@ export class BrandStyleChecker implements AsyncChecker {
     const systemPrompt = this.buildSystemPrompt(styleGuideText);
     const userPrompt = this.buildUserPrompt(content);
 
-    const response = await model.invoke([
-      new SystemMessage(systemPrompt),
-      new HumanMessage(userPrompt),
-    ]);
+    let lastError: CheckResult | null = null;
 
-    const responseText =
-      typeof response.content === 'string'
-        ? response.content
-        : JSON.stringify(response.content);
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      const response = await model.invoke([
+        new SystemMessage(systemPrompt),
+        new HumanMessage(userPrompt),
+      ]);
 
-    return this.parseResponse(responseText, options.severityThreshold);
+      const responseText =
+        typeof response.content === 'string'
+          ? response.content
+          : JSON.stringify(response.content);
+
+      const result = this.parseResponse(responseText, options.severityThreshold);
+
+      // If parsing succeeded, return the result
+      if (!result.message.startsWith('Failed to parse LLM response')) {
+        return result;
+      }
+
+      // Store the error for potential return after all retries exhausted
+      lastError = result;
+    }
+
+    // All retries exhausted, return the last error
+    return lastError!;
   }
 
   private parseModelString(modelString: string): [string, string] {
@@ -127,27 +143,17 @@ INSTRUCTIONS:
    - suggestion: how to fix it (if applicable)
    - explanation: why this violates the style guide
 
-3. Respond ONLY with valid JSON in this exact format:
-{
-  "violations": [
-    {
-      "type": "terminology",
-      "severity": "error",
-      "original": "the problematic text",
-      "suggestion": "the corrected text",
-      "explanation": "why this is a violation"
-    }
-  ],
-  "confidence": 0.95
-}
+CRITICAL: Your response must be ONLY a valid JSON object. Do not include any text before or after the JSON.
+Do not include explanations, alternatives, or suggestions outside the JSON structure.
+Do not use markdown code blocks. Output raw JSON only.
 
-4. If no violations are found, respond with:
-{
-  "violations": [],
-  "confidence": 1.0
-}
+If no violations are found:
+{"violations":[],"confidence":1.0}
 
-5. The confidence score (0-1) indicates how certain you are about your analysis.`;
+If violations are found:
+{"violations":[{"type":"terminology","severity":"error","original":"text","suggestion":"fix","explanation":"reason"}],"confidence":0.95}
+
+The confidence score (0-1) indicates how certain you are about your analysis.`;
   }
 
   private buildUserPrompt(content: string): string {
