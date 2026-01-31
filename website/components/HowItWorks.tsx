@@ -1,5 +1,57 @@
 "use client";
 
+import { Highlight, type PrismTheme } from "prism-react-renderer";
+
+// Custom theme matching site colors (same as Quickstart)
+const customTheme: PrismTheme = {
+  plain: {
+    color: "#F5F0E8", // warm cream
+    backgroundColor: "#3D2B1F", // chocolate brown
+  },
+  styles: [
+    {
+      types: ["comment", "prolog", "doctype", "cdata"],
+      style: { color: "#A89F91", fontStyle: "italic" as const },
+    },
+    {
+      types: ["punctuation"],
+      style: { color: "#D4A574" }, // muted gold
+    },
+    {
+      types: ["property", "tag", "boolean", "number", "constant", "symbol"],
+      style: { color: "#E8B87D" }, // mustard gold
+    },
+    {
+      types: ["selector", "attr-name", "string", "char", "builtin", "inserted"],
+      style: { color: "#E07B5E" }, // burnt sienna / coral
+    },
+    {
+      types: ["atrule", "attr-value", "keyword"],
+      style: { color: "#8ECAE6" }, // soft blue
+    },
+    {
+      types: ["function", "class-name"],
+      style: { color: "#F4D35E" }, // bright gold
+    },
+    {
+      types: ["regex", "important", "variable"],
+      style: { color: "#95D5B2" }, // mint green
+    },
+    {
+      types: ["title"],
+      style: { color: "#F4D35E", fontWeight: "bold" as const }, // headers in gold
+    },
+    {
+      types: ["bold"],
+      style: { fontWeight: "bold" as const },
+    },
+    {
+      types: ["italic"],
+      style: { fontStyle: "italic" as const },
+    },
+  ],
+};
+
 export default function HowItWorks() {
   const workflowCode = `# .github/workflows/stringly-typed.yml
 name: Stringly-Typed
@@ -47,9 +99,26 @@ jobs:
                   stringly-typed.yml
                 </span>
               </div>
-              <pre className="bg-[var(--chocolate-brown)] p-4 text-sm font-mono text-[var(--warm-cream)] overflow-x-auto leading-relaxed">
-                <code>{workflowCode}</code>
-              </pre>
+              <Highlight
+                theme={customTheme}
+                code={workflowCode}
+                language="yaml"
+              >
+                {({ className, style, tokens, getLineProps, getTokenProps }) => (
+                  <pre
+                    className={`${className} p-4 text-sm font-mono overflow-x-auto leading-relaxed`}
+                    style={style}
+                  >
+                    {tokens.map((line, i) => (
+                      <div key={i} {...getLineProps({ line })}>
+                        {line.map((token, key) => (
+                          <span key={key} {...getTokenProps({ token })} />
+                        ))}
+                      </div>
+                    ))}
+                  </pre>
+                )}
+              </Highlight>
             </div>
           </div>
 
