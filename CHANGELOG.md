@@ -11,6 +11,12 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.4.13](https://github.com/ddnetters/stringly-typed/compare/v1.4.12...v1.4.13) (2026-01-31)
+
+### 👷 CI/CD
+
+* add emojis to workflow names ([ef374ba](https://github.com/ddnetters/stringly-typed/commit/ef374ba55423e09433de98b5bde87e1e047088e3))
+
 ## [1.4.12](https://github.com/ddnetters/stringly-typed/compare/v1.4.11...v1.4.12) (2026-01-31)
 
 ### 👷 CI/CD
