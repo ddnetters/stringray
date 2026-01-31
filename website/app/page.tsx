@@ -14,6 +14,14 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           {/* Hero Text */}
           <div className="text-center mb-12 lg:mb-16">
+            {/* Logo */}
+            <div className="flex justify-center mb-8">
+              <img
+                src="/images/stringly-typed-logo-v2-b.png"
+                alt="Stringly-Typed"
+                className="h-24 md:h-32 w-auto"
+              />
+            </div>
             <h1
               className="font-[family-name:var(--font-righteous)] text-4xl md:text-5xl lg:text-6xl text-[var(--chocolate-brown)] mb-6 leading-tight"
             >
