@@ -359,6 +359,64 @@ describe('BrandStyleChecker', () => {
       expect(result.valid).toBe(false);
       expect(result.message).toContain('unknown error');
     });
+
+    it('should retry on malformed JSON and succeed on valid response', async () => {
+      const mockModel = {
+        invoke: jest
+          .fn()
+          .mockResolvedValueOnce({
+            content: 'This is not valid JSON at all',
+          })
+          .mockResolvedValueOnce({
+            content: JSON.stringify({ violations: [], confidence: 1.0 }),
+          }),
+      };
+      mockCreateChatModel.mockReturnValue(mockModel as any);
+
+      const result = await checker.check('test', { styleGuide });
+
+      expect(result.valid).toBe(true);
+      expect(mockModel.invoke).toHaveBeenCalledTimes(2);
+    });
+
+    it('should retry up to MAX_RETRIES times before failing', async () => {
+      const mockModel = {
+        invoke: jest.fn().mockResolvedValue({
+          content: 'This is not valid JSON',
+        }),
+      };
+      mockCreateChatModel.mockReturnValue(mockModel as any);
+
+      const result = await checker.check('test', { styleGuide });
+
+      expect(result.valid).toBe(false);
+      expect(result.message).toContain('Failed to parse LLM response');
+      // MAX_RETRIES = 2, so total attempts = 3 (initial + 2 retries)
+      expect(mockModel.invoke).toHaveBeenCalledTimes(3);
+    });
+
+    it('should succeed on third attempt after two malformed responses', async () => {
+      const mockModel = {
+        invoke: jest
+          .fn()
+          .mockResolvedValueOnce({
+            content: 'malformed response 1',
+          })
+          .mockResolvedValueOnce({
+            content: 'malformed response 2',
+          })
+          .mockResolvedValueOnce({
+            content: JSON.stringify({ violations: [], confidence: 0.9 }),
+          }),
+      };
+      mockCreateChatModel.mockReturnValue(mockModel as any);
+
+      const result = await checker.check('test', { styleGuide });
+
+      expect(result.valid).toBe(true);
+      expect(result.confidence).toBe(0.9);
+      expect(mockModel.invoke).toHaveBeenCalledTimes(3);
+    });
   });
 
   describe('StyleGuideConfig formatting', () => {
