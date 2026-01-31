@@ -1,7 +1,6 @@
 <div align="center">
 
-<!-- TODO: Add hero banner once ready -->
-<!-- <img src="assets/hero-banner.png" alt="Stringly-Typed" width="600"> -->
+<img src="assets/stringly-typed-logo-v2-b.png" alt="Stringly-Typed" width="200">
 
 # Stringly-Typed
 

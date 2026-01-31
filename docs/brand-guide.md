@@ -38,7 +38,7 @@ A thoughtful, practical tool that brings order and consistency to brand voice ac
 |------|-----|-----|-------|
 | **Burnt Sienna** | `#C45D3E` | 196, 93, 62 | Primary actions, CTAs, brand accent |
 | **Mustard Gold** | `#D4A853` | 212, 168, 83 | Secondary accent, highlights, cursors |
-| **Warm Cream** | `#F5EDE4` | 245, 237, 228 | Backgrounds, cards |
+| **Warm Cream** | `#F4E8DD` | 244, 232, 221 | Backgrounds, cards, logo background |
 | **Chocolate Brown** | `#3D2B23` | 61, 43, 35 | Primary text, headings |
 | **Deep Burgundy** | `#8B3A3A` | 139, 58, 58 | Emphasis, error states |
 
