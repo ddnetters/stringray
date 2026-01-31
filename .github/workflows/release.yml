@@ -240,7 +240,7 @@ EOF
             pkg.bugs = {
               url: 'https://github.com/ddnetters/stringly-typed/issues'
             };
-            pkg.homepage = 'https://github.com/ddnetters/stringly-typed#readme';
+            pkg.homepage = 'https://stringly-typed.netters.dev';
             require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));
           "
       

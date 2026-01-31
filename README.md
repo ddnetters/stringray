@@ -5,7 +5,7 @@
 [![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Stringly--Typed-blue?logo=github)](https://github.com/marketplace/actions/stringly-typed)
 [![GitHub release](https://img.shields.io/github/v/release/ddnetters/stringly-typed)](https://github.com/ddnetters/stringly-typed/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Website](https://img.shields.io/badge/Website-stringly--typed-C45D3E)](https://stringly-typed-4a0c8.web.app/)
+[![Website](https://img.shields.io/badge/Website-stringly--typed-C45D3E)](https://stringly-typed.netters.dev)
 
 Stringly-Typed is a GitHub Action that validates your UI strings against your brand voice using AI. It runs on every push, catches tone violations, and comments on PRs with specific fixes.
 
