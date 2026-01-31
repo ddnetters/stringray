@@ -11,6 +11,12 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.4.10](https://github.com/ddnetters/stringly-typed/compare/v1.4.9...v1.4.10) (2026-01-31)
+
+### 🔧 Maintenance
+
+* **deps:** bump esbuild from 0.24.2 to 0.25.0 ([#22](https://github.com/ddnetters/stringly-typed/issues/22)) ([0db1b4d](https://github.com/ddnetters/stringly-typed/commit/0db1b4d6f71af43e5689e2846b91a010359055f7))
+
 ## [1.4.9](https://github.com/ddnetters/stringly-typed/compare/v1.4.8...v1.4.9) (2026-01-31)
 
 ### 📚 Documentation
