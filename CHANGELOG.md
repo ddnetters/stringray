@@ -11,6 +11,12 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.4.4](https://github.com/ddnetters/stringly-typed/compare/v1.4.3...v1.4.4) (2026-01-31)
+
+### 📚 Documentation
+
+* add LLM providers guide to README ([fbe2b8c](https://github.com/ddnetters/stringly-typed/commit/fbe2b8c90200765eeaf0b1811f3b1b81a886435d))
+
 ## [1.4.3](https://github.com/ddnetters/stringly-typed/compare/v1.4.2...v1.4.3) (2026-01-31)
 
 ### 🔧 Maintenance
