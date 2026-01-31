@@ -2,7 +2,7 @@
 
 import posthog from "posthog-js";
 import { PostHogProvider as PHProvider } from "posthog-js/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { CookieConsent, getConsentStatus, type ConsentStatus } from "./CookieConsent";
 
 function initPostHog() {
@@ -25,8 +25,38 @@ function initPostHog() {
   }
 }
 
+function useScrollDepthTracking(enabled: boolean) {
+  const trackedDepths = useRef<Set<number>>(new Set());
+
+  useEffect(() => {
+    if (!enabled || typeof window === "undefined") return;
+
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight <= 0) return;
+
+      const scrollPercent = Math.round((scrollTop / docHeight) * 100);
+      const thresholds = [25, 50, 75, 100];
+
+      for (const threshold of thresholds) {
+        if (scrollPercent >= threshold && !trackedDepths.current.has(threshold)) {
+          trackedDepths.current.add(threshold);
+          posthog.capture("scroll_depth", { depth: threshold });
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [enabled]);
+}
+
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   const [consentStatus, setConsentStatus] = useState<ConsentStatus>("pending");
+
+  // Track scroll depth when consent is granted
+  useScrollDepthTracking(consentStatus === "granted");
 
   useEffect(() => {
     const status = getConsentStatus();
