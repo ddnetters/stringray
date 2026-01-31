@@ -11,6 +11,12 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.4.8](https://github.com/ddnetters/stringly-typed/compare/v1.4.7...v1.4.8) (2026-01-31)
+
+### 🐛 Bug Fixes
+
+* noCritical decider now detects error-severity violations ([98de603](https://github.com/ddnetters/stringly-typed/commit/98de603c6849ce38c974da1fd2572469be242ea8))
+
 ## [1.4.7](https://github.com/ddnetters/stringly-typed/compare/v1.4.6...v1.4.7) (2026-01-31)
 
 ### 🐛 Bug Fixes
