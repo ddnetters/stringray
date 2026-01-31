@@ -6,6 +6,10 @@ jest.mock('@langchain/openai', () => ({
     _type: 'openai',
     ...config,
   })),
+  AzureChatOpenAI: jest.fn().mockImplementation((config) => ({
+    _type: 'azure',
+    ...config,
+  })),
 }));
 
 jest.mock('@langchain/anthropic', () => ({
@@ -22,13 +26,23 @@ jest.mock('@langchain/google-genai', () => ({
   })),
 }));
 
-import { ChatOpenAI } from '@langchain/openai';
+jest.mock('@langchain/aws', () => ({
+  ChatBedrockConverse: jest.fn().mockImplementation((config) => ({
+    _type: 'bedrock',
+    ...config,
+  })),
+}));
+
+import { ChatOpenAI, AzureChatOpenAI } from '@langchain/openai';
 import { ChatAnthropic } from '@langchain/anthropic';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
+import { ChatBedrockConverse } from '@langchain/aws';
 
 const MockChatOpenAI = ChatOpenAI as jest.MockedClass<typeof ChatOpenAI>;
+const MockAzureChatOpenAI = AzureChatOpenAI as jest.MockedClass<typeof AzureChatOpenAI>;
 const MockChatAnthropic = ChatAnthropic as jest.MockedClass<typeof ChatAnthropic>;
 const MockChatGoogleGenerativeAI = ChatGoogleGenerativeAI as jest.MockedClass<typeof ChatGoogleGenerativeAI>;
+const MockChatBedrockConverse = ChatBedrockConverse as jest.MockedClass<typeof ChatBedrockConverse>;
 
 describe('createChatModel', () => {
   beforeEach(() => {
@@ -86,6 +100,46 @@ describe('createChatModel', () => {
     });
   });
 
+  describe('Azure OpenAI provider', () => {
+    it('should create AzureChatOpenAI for azure provider', () => {
+      createChatModel('azure', 'gpt-4o-mini', { temperature: 0 });
+
+      expect(MockAzureChatOpenAI).toHaveBeenCalledWith({
+        model: 'gpt-4o-mini',
+        temperature: 0,
+      });
+    });
+
+    it('should create AzureChatOpenAI with custom temperature', () => {
+      createChatModel('azure', 'gpt-4o', { temperature: 0.5 });
+
+      expect(MockAzureChatOpenAI).toHaveBeenCalledWith({
+        model: 'gpt-4o',
+        temperature: 0.5,
+      });
+    });
+  });
+
+  describe('AWS Bedrock provider', () => {
+    it('should create ChatBedrockConverse for bedrock provider', () => {
+      createChatModel('bedrock', 'anthropic.claude-3-haiku-20240307-v1:0', { temperature: 0 });
+
+      expect(MockChatBedrockConverse).toHaveBeenCalledWith({
+        model: 'anthropic.claude-3-haiku-20240307-v1:0',
+        temperature: 0,
+      });
+    });
+
+    it('should create ChatBedrockConverse with custom temperature', () => {
+      createChatModel('bedrock', 'amazon.titan-text-lite-v1', { temperature: 0.3 });
+
+      expect(MockChatBedrockConverse).toHaveBeenCalledWith({
+        model: 'amazon.titan-text-lite-v1',
+        temperature: 0.3,
+      });
+    });
+  });
+
   describe('unsupported provider', () => {
     it('should throw error for unsupported provider', () => {
       expect(() => {
@@ -95,8 +149,8 @@ describe('createChatModel', () => {
 
     it('should include supported providers in error message', () => {
       expect(() => {
-        createChatModel('bedrock', 'some-model', { temperature: 0 });
-      }).toThrow(/Supported providers.*openai.*anthropic.*google/);
+        createChatModel('cohere', 'some-model', { temperature: 0 });
+      }).toThrow(/Supported providers.*openai.*anthropic.*google.*azure.*bedrock/);
     });
   });
 
