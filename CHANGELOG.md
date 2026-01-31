@@ -11,6 +11,13 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.4.14](https://github.com/ddnetters/stringly-typed/compare/v1.4.13...v1.4.14) (2026-01-31)
+
+### 🐛 Bug Fixes
+
+* add website images to git (were ignored by /public rule) ([4653135](https://github.com/ddnetters/stringly-typed/commit/4653135d2f261f7a64e976a5a30197e21189699f))
+* remove catch-all rewrite that was breaking static assets ([4e72355](https://github.com/ddnetters/stringly-typed/commit/4e72355c56cac8e46b4b4ecd6cc665bd70da9438))
+
 ## [1.4.13](https://github.com/ddnetters/stringly-typed/compare/v1.4.12...v1.4.13) (2026-01-31)
 
 ### 👷 CI/CD
