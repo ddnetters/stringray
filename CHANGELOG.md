@@ -11,6 +11,19 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.7.0](https://github.com/ddnetters/stringly-typed/compare/v1.6.0...v1.7.0) (2026-02-02)
+
+### ✨ Features
+
+* **action:** log failed strings with reasons on validation failure ([#32](https://github.com/ddnetters/stringly-typed/issues/32)) ([8e7af78](https://github.com/ddnetters/stringly-typed/commit/8e7af78fbbde8e4e9abd660a7beeca386afd06b8))
+* **website:** add comprehensive analytics tracking ([3c23e09](https://github.com/ddnetters/stringly-typed/commit/3c23e097f9e59d69caa3da566a8508b0abcdb650))
+* **website:** add GDPR-compliant cookie consent banner ([82679db](https://github.com/ddnetters/stringly-typed/commit/82679db52fe189490907999e22119ec078dc195c))
+* **website:** add scroll depth tracking ([72febde](https://github.com/ddnetters/stringly-typed/commit/72febde73ecb9d7b0bda2dfedab58970e6e5d732))
+
+### ⚡ Performance
+
+* **website:** improve Lighthouse scores with multiple optimizations ([#31](https://github.com/ddnetters/stringly-typed/issues/31)) ([83acab4](https://github.com/ddnetters/stringly-typed/commit/83acab420de0b8745f1c93bfe0fab42cb0f48e3f))
+
 ## [1.6.0](https://github.com/ddnetters/stringly-typed/compare/v1.5.0...v1.6.0) (2026-01-31)
 
 ### ✨ Features
