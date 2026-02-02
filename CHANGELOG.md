@@ -11,6 +11,17 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.8.0](https://github.com/ddnetters/stringly-typed/compare/v1.7.0...v1.8.0) (2026-02-02)
+
+### ✨ Features
+
+* **action:** add suggestion column to PR comment table ([#33](https://github.com/ddnetters/stringly-typed/issues/33)) ([26a327d](https://github.com/ddnetters/stringly-typed/commit/26a327d107a01757ce191369de64e1052c0c2e98))
+* **website:** add suggestion column to GitHub comment example ([#34](https://github.com/ddnetters/stringly-typed/issues/34)) ([931f5fa](https://github.com/ddnetters/stringly-typed/commit/931f5fa561b172a19e0e2fda617d595e94c8a289))
+
+### 📚 Documentation
+
+* add demo repo link to README and website ([#35](https://github.com/ddnetters/stringly-typed/issues/35)) ([213581a](https://github.com/ddnetters/stringly-typed/commit/213581aae65467f197c82618a32132457612ba4c))
+
 ## [1.7.0](https://github.com/ddnetters/stringly-typed/compare/v1.6.0...v1.7.0) (2026-02-02)
 
 ### ✨ Features
