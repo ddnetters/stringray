@@ -11,6 +11,16 @@ Releases are automatically created when PRs with conventional commit titles are 
 - `BREAKING CHANGE` or `!` → Major version bump
 
 
+## [1.8.1](https://github.com/ddnetters/stringly-typed/compare/v1.8.0...v1.8.1) (2026-02-03)
+
+### 🐛 Bug Fixes
+
+* **ci:** remove invalid secrets access from job-level if condition ([#37](https://github.com/ddnetters/stringly-typed/issues/37)) ([a45a391](https://github.com/ddnetters/stringly-typed/commit/a45a391632e4c8eded969597b089c7358fc4c384))
+
+### 🔧 Maintenance
+
+* add open source community files ([#36](https://github.com/ddnetters/stringly-typed/issues/36)) ([91bda0a](https://github.com/ddnetters/stringly-typed/commit/91bda0a89284a2aaf874f18d9edda90a63b17eda))
+
 ## [1.8.0](https://github.com/ddnetters/stringly-typed/compare/v1.7.0...v1.8.0) (2026-02-02)
 
 ### ✨ Features
