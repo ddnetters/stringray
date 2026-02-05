@@ -42,7 +42,7 @@
     "@langchain/core": "^1.1.18",
     "@langchain/google-genai": "^2.1.14",
     "@langchain/openai": "^1.2.4",
-    "glob": "^13.0.0",
+    "glob": "^13.0.1",
     "langchain": "^1.2.16",
     "zod": "^4.3.6"
   }
